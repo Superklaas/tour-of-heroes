@@ -11,7 +11,6 @@ import {Location} from "@angular/common";
 })
 export class HeroDetailComponent implements OnInit {
 
-  @Input()
   hero?: Hero;
 
   constructor(private heroService: HeroService, private route: ActivatedRoute, private location: Location) { }
@@ -25,7 +24,12 @@ export class HeroDetailComponent implements OnInit {
     this.heroService.findHeroById(id).subscribe(hero => this.hero = hero);
   }
 
-  goBack() {
+  save(): void {
+    this.heroService.updateHero(this.hero).subscribe(() => this.goBack());
+  }
+
+  goBack(): void {
     this.location.back();
   }
+
 }

@@ -1,4 +1,9 @@
 /* AppComponent's private CSS styles */
+
+* {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 h1 {
   margin-bottom: 0;
 }

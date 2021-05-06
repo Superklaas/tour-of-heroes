@@ -10,14 +10,17 @@ import {Hero} from "../model/hero";
 export class DashboardComponent implements OnInit {
 
   heroes: Hero[];
+  searchText: string;
 
-  constructor(private heroService: HeroService) { }
+  constructor(private heroService: HeroService) {
+    this.searchText = '';
+  }
 
   ngOnInit(): void {
     this.getHeroes();
   }
 
   private getHeroes() {
-    this.heroService.getHeroes().subscribe(heroes => this.heroes = heroes.slice(1,5));
+      this.heroService.getHeroes().subscribe(heroes => this.heroes = heroes);
   }
 }

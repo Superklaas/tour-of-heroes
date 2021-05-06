@@ -1,10 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Hero} from "../model/hero";
-import {HEROES} from "../model/mock-heroes";
 import {Observable, of} from "rxjs";
 import {MessageService} from "../message-service/message.service";
 import {HttpClient} from "@angular/common/http";
-import {catchError, map, tap} from 'rxjs/operators';
+import {catchError, tap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +15,14 @@ export class HeroService {
   constructor(private messageService: MessageService, private http: HttpClient) {
   }
 
+  addHero(hero: Hero): Observable<any> {
+    return this.http.post(this.heroesUrl, hero)
+      .pipe(
+        tap((newHero: Hero) => this.log(`added hero w/ id=${newHero.id}`)),
+        catchError(this.handleError<Hero>('addHero'))
+      );
+  }
+
   getHeroes(): Observable<Hero[]> {
     this.log('fetched heroes');
     return this.http.get<Hero[]>(this.heroesUrl)
@@ -23,11 +30,27 @@ export class HeroService {
   }
 
   findHeroById(id: number): Observable<Hero> {
-    this.log(`details hero with id ${id}`)
-    return this.http.get<Hero>(`${this.heroesUrl}/${id}`).pipe(
-      tap(_ => this.log(`fetched hero id=${id}`)),
-      catchError(this.handleError<Hero>(`getHero id=${id}`)));
-    // return of(HEROES.find(hero => hero.id === id) as Hero);
+    return this.http.get<Hero>(`${this.heroesUrl}/${id}`)
+      .pipe(
+        tap(_ => this.log(`fetched hero id=${id}`)),
+        catchError(this.handleError<Hero>(`getHero id=${id}`))
+      );
+  }
+
+  updateHero(hero: Hero): Observable<any> {
+    return this.http.put(`${this.heroesUrl}/${(hero.id)}`, hero)
+      .pipe(
+        tap(_ => this.log(`updated hero id=${(hero.id)}`)),
+        catchError(this.handleError<Hero>(`updateHero id=${(hero.id)}`))
+      );
+  }
+
+  deleteHero(id: number): Observable<any> {
+    return this.http.delete<Hero>(`${this.heroesUrl}/${id}`)
+      .pipe(
+        tap(_ => this.log(`deleted hero id=${id}`)),
+        catchError(this.handleError<Hero>('deleteHero'))
+      );
   }
 
   /** Log a HeroService message with the MessageService */
